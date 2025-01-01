@@ -33,7 +33,7 @@ class FiltrawyApp:
     def __init__(self, window):
         self.window = window
         self.window.title("GREAT MATES - Computer Science")
-        self.window.geometry("1400x900")
+        self.window.geometry("1400x1200")
         
         # Initialize filter parameters
         self.filter_params = {
@@ -201,6 +201,21 @@ class FiltrawyApp:
         # Make filter frame fixed width and full height
         self.filter_frame.grid_propagate(False)
         self.filter_frame.configure(width=200)  # Fixed width for filter panel
+        
+        # Configure display frame weights
+        self.display_frame.grid_columnconfigure(0, weight=1)
+        self.display_frame.grid_columnconfigure(1, weight=1)
+        self.display_frame.grid_rowconfigure(0, weight=1)
+        
+        # Configure minimum size for image frames
+        min_frame_width = 400
+        min_frame_height = 300
+        self.original_label_frame.configure(width=min_frame_width, height=min_frame_height)
+        self.filtered_label_frame.configure(width=min_frame_width, height=min_frame_height)
+        
+        # Prevent frame shrinking
+        self.original_label_frame.pack_propagate(False)
+        self.filtered_label_frame.pack_propagate(False)
     
     def create_menu(self):
         menubar = tk.Menu(self.window)
@@ -261,105 +276,74 @@ class FiltrawyApp:
         help_menu.add_command(label="About", command=self.show_about)
     
     def create_filter_controls(self):
-        # Create a frame for each control group
-        basic_controls = ttk.LabelFrame(self.control_frame, text="Basic Controls")
-        basic_controls.pack(fill="x", padx=5, pady=5)
-        
-        color_controls = ttk.LabelFrame(self.control_frame, text="Color Controls")
-        color_controls.pack(fill="x", padx=5, pady=5)
-        
-        effect_controls = ttk.LabelFrame(self.control_frame, text="Effect Controls")
-        effect_controls.pack(fill="x", padx=5, pady=5)
-
+        """Create sliders for filter parameters"""
         # Basic Controls
-        # Intensity slider
-        ttk.Label(basic_controls, text="Intensity:").pack(anchor="w", padx=5, pady=2)
-        self.intensity_slider = ttk.Scale(
-            basic_controls,
-            from_=0.1,
-            to=2.0,
-            orient="horizontal",
-            variable=self.filter_params['intensity']
-        )
-        self.intensity_slider.pack(fill="x", padx=5, pady=2)
+        basic_frame = ttk.LabelFrame(self.control_frame, text="Basic Controls", style="Controls.TFrame")
+        basic_frame.pack(side="left", fill="x", expand=True, padx=5, pady=5)
         
-        # Threshold slider
-        ttk.Label(basic_controls, text="Threshold:").pack(anchor="w", padx=5, pady=2)
-        self.threshold_slider = ttk.Scale(
-            basic_controls,
-            from_=0,
-            to=255,
-            orient="horizontal",
-            variable=self.filter_params['threshold']
-        )
-        self.threshold_slider.pack(fill="x", padx=5, pady=2)
+        # Intensity control
+        ttk.Label(basic_frame, text="Intensity:", style="Controls.TLabel").pack()
+        intensity_scale = ttk.Scale(basic_frame, from_=0.0, to=2.0,
+                                  variable=self.filter_params['intensity'],
+                                  command=self.on_slider_change)
+        intensity_scale.pack(fill="x", padx=5)
+        
+        # Threshold control
+        ttk.Label(basic_frame, text="Threshold:", style="Controls.TLabel").pack()
+        threshold_scale = ttk.Scale(basic_frame, from_=0, to=255,
+                                  variable=self.filter_params['threshold'],
+                                  command=self.on_slider_change)
+        threshold_scale.pack(fill="x", padx=5)
         
         # Color Controls
-        # Temperature slider
-        ttk.Label(color_controls, text="Temperature:").pack(anchor="w", padx=5, pady=2)
-        self.temp_slider = ttk.Scale(
-            color_controls,
-            from_=-50,
-            to=50,
-            orient="horizontal",
-            variable=self.filter_params['temperature']
-        )
-        self.temp_slider.pack(fill="x", padx=5, pady=2)
+        color_frame = ttk.LabelFrame(self.control_frame, text="Color Controls", style="Controls.TFrame")
+        color_frame.pack(side="left", fill="x", expand=True, padx=5, pady=5)
         
-        # Saturation slider
-        ttk.Label(color_controls, text="Saturation:").pack(anchor="w", padx=5, pady=2)
-        self.sat_slider = ttk.Scale(
-            color_controls,
-            from_=0.0,
-            to=2.0,
-            orient="horizontal",
-            variable=self.filter_params['saturation']
-        )
-        self.sat_slider.pack(fill="x", padx=5, pady=2)
+        # Temperature control
+        ttk.Label(color_frame, text="Temperature:", style="Controls.TLabel").pack()
+        temp_scale = ttk.Scale(color_frame, from_=-100, to=100,
+                             variable=self.filter_params['temperature'],
+                             command=self.on_slider_change)
+        temp_scale.pack(fill="x", padx=5)
+        
+        # Saturation control
+        ttk.Label(color_frame, text="Saturation:", style="Controls.TLabel").pack()
+        sat_scale = ttk.Scale(color_frame, from_=0.0, to=2.0,
+                            variable=self.filter_params['saturation'],
+                            command=self.on_slider_change)
+        sat_scale.pack(fill="x", padx=5)
         
         # Effect Controls
-        # Vignette slider
-        ttk.Label(effect_controls, text="Vignette:").pack(anchor="w", padx=5, pady=2)
-        self.vignette_slider = ttk.Scale(
-            effect_controls,
-            from_=0.0,
-            to=1.0,
-            orient="horizontal",
-            variable=self.filter_params['vignette']
-        )
-        self.vignette_slider.pack(fill="x", padx=5, pady=2)
+        effect_frame = ttk.LabelFrame(self.control_frame, text="Effect Controls", style="Controls.TFrame")
+        effect_frame.pack(side="left", fill="x", expand=True, padx=5, pady=5)
         
-        # Blur radius slider
-        ttk.Label(effect_controls, text="Blur Radius:").pack(anchor="w", padx=5, pady=2)
-        self.blur_slider = ttk.Scale(
-            effect_controls,
-            from_=1,
-            to=21,
-            orient="horizontal",
-            variable=self.filter_params['blur_radius']
-        )
-        self.blur_slider.pack(fill="x", padx=5, pady=2)
+        # Vignette control
+        ttk.Label(effect_frame, text="Vignette:", style="Controls.TLabel").pack()
+        vignette_scale = ttk.Scale(effect_frame, from_=0.0, to=1.0,
+                                 variable=self.filter_params['vignette'],
+                                 command=self.on_slider_change)
+        vignette_scale.pack(fill="x", padx=5)
         
-        # Bind all sliders to update function
-        for slider in [self.intensity_slider, self.threshold_slider, 
-                      self.temp_slider, self.sat_slider,
-                      self.vignette_slider, self.blur_slider]:
-            slider.configure(command=self.on_slider_change)
+        # Blur radius control
+        ttk.Label(effect_frame, text="Blur Radius:", style="Controls.TLabel").pack()
+        blur_scale = ttk.Scale(effect_frame, from_=1, to=21,
+                             variable=self.filter_params['blur_radius'],
+                             command=self.on_slider_change)
+        blur_scale.pack(fill="x", padx=5)
     
-    def on_slider_change(self, value):
-        if self.img and hasattr(self.img, 'update'):
+    def on_slider_change(self, event=None):
+        """Handle slider value changes"""
+        if self.img is not None:
             # Update filter parameters
-            params = {
+            self.img.set_filter_params({
                 'intensity': self.filter_params['intensity'].get(),
                 'threshold': self.filter_params['threshold'].get(),
                 'temperature': self.filter_params['temperature'].get(),
                 'saturation': self.filter_params['saturation'].get(),
                 'vignette': self.filter_params['vignette'].get(),
                 'blur_radius': self.filter_params['blur_radius'].get()
-            }
-            # Pass parameters to image processor
-            if hasattr(self.img, 'set_filter_params'):
-                self.img.set_filter_params(params)
+            })
+            # Update the image
             self.img.update()
     
     def save_image(self):
@@ -376,6 +360,10 @@ class FiltrawyApp:
             filetypes=[
                 ("PNG files", "*.png"),
                 ("JPEG files", "*.jpg"),
+                ("TIFF files", "*.tiff"),
+                ("BMP files", "*.bmp"),
+                ("GIF files", "*.gif"),
+                
                 ("All files", "*.*")
             ]
         )
@@ -472,56 +460,51 @@ Ctrl+0 : Fit to Window"""
                   command=self.start_batch_processing).pack(side="left", padx=5)
     
     def create_filter_categories(self):
-        # Configure filter frame style
-        self.filter_frame.configure(style="Filters.TLabelframe")
+        """Create filter category buttons"""
+        # Basic filters
+        ttk.Label(self.filter_frame, text="Basic", style="Category.TLabel").pack(fill="x")
+        ttk.Button(self.filter_frame, text="Color", command=lambda: self.apply_filter('color'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Grayscale", command=lambda: self.apply_filter('gray'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Threshold", command=lambda: self.apply_filter('threshold'),
+                  style="Filter.TButton").pack(pady=2)
         
-        categories = {
-            "Basic": ['color', 'gray', 'threshold'],
-            "Enhancement": ['increaseContrast', 'decreaseContrast', 'logTransformation', 
-                          'powerLowEnhancement', 'negativeEnhancement'],
-            "Blur": ['gauss', 'median', 'average'],
-            "Edge Detection": ['sobel', 'laplace', 'prewitt'],
-            "Morphological": ['min', 'max'],
-            "Advanced": ['unsharp', 'histogramEqualization'],
-            "Instagram Style": ['sepia', 'vintage', 'vignette', 'temperature', 'saturation'],
-            "Special Effects": ['denoise', 'hdr', 'tilt_shift']
-        }
+        # Enhancement filters
+        ttk.Label(self.filter_frame, text="Enhancement", style="Category.TLabel").pack(fill="x", pady=(10,0))
+        ttk.Button(self.filter_frame, text="Increase Contrast", command=lambda: self.apply_filter('increaseContrast'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Decrease Contrast", command=lambda: self.apply_filter('decreaseContrast'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Log Transform", command=lambda: self.apply_filter('logTransformation'),
+                  style="Filter.TButton").pack(pady=2)
         
-        # Create a canvas with scrollbar for the filter categories
-        canvas = tk.Canvas(self.filter_frame, highlightthickness=0)
-        scrollbar = ttk.Scrollbar(self.filter_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = ttk.Frame(canvas)
+        # Blur filters
+        ttk.Label(self.filter_frame, text="Blur", style="Category.TLabel").pack(fill="x", pady=(10,0))
+        ttk.Button(self.filter_frame, text="Gaussian Blur", command=lambda: self.apply_filter('gauss'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Median Blur", command=lambda: self.apply_filter('median'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Average Blur", command=lambda: self.apply_filter('average'),
+                  style="Filter.TButton").pack(pady=2)
         
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
+        # Edge Detection
+        ttk.Label(self.filter_frame, text="Edge Detection", style="Category.TLabel").pack(fill="x", pady=(10,0))
+        ttk.Button(self.filter_frame, text="Sobel", command=lambda: self.apply_filter('sobel'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Laplace", command=lambda: self.apply_filter('laplace'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Prewitt", command=lambda: self.apply_filter('prewitt'),
+                  style="Filter.TButton").pack(pady=2)
         
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw", width=canvas.winfo_reqwidth())
-        canvas.configure(yscrollcommand=scrollbar.set)
-        
-        # Pack the canvas and scrollbar
-        canvas.pack(side="left", fill="both", expand=True, padx=(5,0))
-        scrollbar.pack(side="right", fill="y")
-        
-        row = 0
-        for category, filters in categories.items():
-            # Add category label
-            ttk.Label(scrollable_frame, text=category, style="Category.TLabel").grid(
-                row=row, column=0, sticky="w", padx=5, pady=(10,5))
-            row += 1
-            
-            # Add filter buttons
-            for filter_name in filters:
-                btn = ttk.Button(scrollable_frame, text=filter_name.capitalize(),
-                               style="Filter.TButton",
-                               command=lambda f=filter_name: self.apply_filter(f))
-                btn.grid(row=row, column=0, sticky="ew", padx=5, pady=2)
-                self.create_tooltip(btn, f"Apply {filter_name} filter")
-                row += 1
-        
-        # Configure scrollable_frame grid
-        scrollable_frame.grid_columnconfigure(0, weight=1)
+        # Effects
+        ttk.Label(self.filter_frame, text="Effects", style="Category.TLabel").pack(fill="x", pady=(10,0))
+        ttk.Button(self.filter_frame, text="Sepia", command=lambda: self.apply_filter('sepia'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Vintage", command=lambda: self.apply_filter('vintage'),
+                  style="Filter.TButton").pack(pady=2)
+        ttk.Button(self.filter_frame, text="Vignette", command=lambda: self.apply_filter('vignette'),
+                  style="Filter.TButton").pack(pady=2)
     
     def create_tooltip(self, widget, text):
         def show_tooltip(event):
@@ -563,14 +546,16 @@ Thank you for using Filtrawy!"""
     
     def select_image(self):
         try:
+            # Create new ImageCap instance
             self.img = ImageCap(self.window)
-            # Update window title with image name if available
-            if hasattr(self.img, 'filename'):
-                filename = os.path.basename(self.img.filename)
-                self.window.title(f"GREAT MATES - Computer Science - {filename}")
-            else:
-                self.window.title("GREAT MATES - Computer Science")
+            
+            # Select and load the image file
+            self.img.select_file()
+            
         except Exception as e:
+            print(f"Error in select_image: {str(e)}")
+            import traceback
+            traceback.print_exc()
             messagebox.showerror("Error", f"Failed to open image: {str(e)}")
     
     def select_camera(self):
@@ -587,9 +572,18 @@ Thank you for using Filtrawy!"""
         
         try:
             # Reset all filters
-            self.img.all_filters = {f: False for f in fil}
+            self.img.all_filters = {f: False for f in [
+                'color', 'gray', 'threshold',
+                'increaseContrast', 'decreaseContrast', 'logTransformation',
+                'gauss', 'median', 'average',
+                'sobel', 'laplace', 'prewitt',
+                'vignette', 'temperature', 'saturation',
+                'unsharp', 'histogramEqualization', 'sepia', 'vintage'
+            ]}
+            
             # Enable selected filter
             self.img.all_filters[filter_name] = True
+            
             # Update filter parameters
             if hasattr(self.img, 'set_filter_params'):
                 self.img.set_filter_params({
@@ -600,9 +594,14 @@ Thank you for using Filtrawy!"""
                     'vignette': self.filter_params['vignette'].get(),
                     'blur_radius': self.filter_params['blur_radius'].get()
                 })
+            
             # Apply filter
             self.img.update()
+            
         except Exception as e:
+            print(f"Error applying filter: {str(e)}")
+            import traceback
+            traceback.print_exc()
             messagebox.showerror("Error", f"Failed to apply filter: {str(e)}")
     
     def start_batch_processing(self):

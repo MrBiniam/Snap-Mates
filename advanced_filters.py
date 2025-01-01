@@ -2,93 +2,17 @@ import cv2
 import numpy as np
 
 class AdvancedFilters:
-    @staticmethod
-    def sepia(image):
-        sepia_matrix = np.array([
-            [0.393, 0.769, 0.189],
-            [0.349, 0.686, 0.168],
-            [0.272, 0.534, 0.131]
-        ])
-        sepia_image = cv2.transform(image, sepia_matrix)
-        sepia_image[np.where(sepia_image > 255)] = 255
-        return sepia_image.astype(np.uint8)
-    
-    @staticmethod
-    def vintage(image):
-        # Add warm temperature
-        image = cv2.convertScaleAbs(image, alpha=1.3, beta=20)
-        # Add slight blue tint to shadows
-        b, g, r = cv2.split(image)
-        b = cv2.convertScaleAbs(b, alpha=1.1, beta=10)
-        return cv2.merge([b, g, r])
-    
-    @staticmethod
-    def vignette(image, intensity=0.5):
-        rows, cols = image.shape[:2]
-        # Generate vignette mask
-        kernel_x = cv2.getGaussianKernel(cols, cols/2)
-        kernel_y = cv2.getGaussianKernel(rows, rows/2)
-        kernel = kernel_y * kernel_x.T
-        mask = kernel / kernel.max()
-        mask = 1 - (1 - mask) * intensity
+    def __init__(self):
+        pass
         
-        # Apply the mask to each channel
-        result = image.copy()
-        for i in range(3):
-            result[:, :, i] = result[:, :, i] * mask
+    def unsharp_mask(self, image):
+        """Apply unsharp mask filter"""
+        gaussian = cv2.GaussianBlur(image, (9, 9), 10.0)
+        unsharp_image = cv2.addWeighted(image, 1.5, gaussian, -0.5, 0)
+        return unsharp_image
         
-        return result.astype(np.uint8)
-    
-    @staticmethod
-    def adjust_temperature(image, value=30):
-        # Split the channels
-        b, g, r = cv2.split(image)
-        
-        if value > 0:  # Warmer
-            r = cv2.add(r, value)
-            b = cv2.subtract(b, value)
-        else:  # Cooler
-            r = cv2.subtract(r, abs(value))
-            b = cv2.add(b, abs(value))
-            
-        return cv2.merge([b, g, r])
-    
-    @staticmethod
-    def adjust_saturation(image, value=1.5):
-        hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-        h, s, v = cv2.split(hsv)
-        s = cv2.multiply(s, value)
-        s = np.clip(s, 0, 255)
-        hsv = cv2.merge([h, s, v])
-        return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
-    
-    @staticmethod
-    def analyze_image(image):
-        # Calculate histogram
-        hist = cv2.calcHist([image], [0], None, [256], [0, 256])
-        
-        # Calculate basic statistics
-        mean = np.mean(image)
-        std = np.std(image)
-        
-        # Edge detection for detail analysis
-        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-        edges = cv2.Canny(gray, 100, 200)
-        edge_density = np.count_nonzero(edges) / (edges.shape[0] * edges.shape[1])
-        
-        return {
-            'histogram': hist,
-            'mean_brightness': mean,
-            'std_dev': std,
-            'edge_density': edge_density
-        }
-    
-    @staticmethod
-    def denoise(image, strength=10):
-        return cv2.fastNlMeansDenoisingColored(image, None, strength, strength, 7, 21)
-    
-    @staticmethod
-    def hdr_effect(image):
+    def histogram_equalization(self, image):
+        """Apply histogram equalization"""
         # Convert to LAB color space
         lab = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
         l, a, b = cv2.split(lab)
@@ -98,24 +22,41 @@ class AdvancedFilters:
         l = clahe.apply(l)
         
         # Merge channels
-        lab = cv2.merge([l, a, b])
-        return cv2.cvtColor(lab, cv2.COLOR_LAB2RGB)
-    
-    @staticmethod
-    def tilt_shift(image, blur_amount=30):
-        h, w = image.shape[:2]
+        lab = cv2.merge((l,a,b))
         
-        # Create gradient mask
-        mask = np.zeros((h, w), dtype=np.float32)
-        center_y = h // 2
-        gradient_size = h // 3
+        # Convert back to RGB
+        result = cv2.cvtColor(lab, cv2.COLOR_LAB2RGB)
+        return result
         
-        mask[center_y-gradient_size:center_y+gradient_size, :] = \
-            np.tile(np.linspace(0, 1, gradient_size*2), (w, 1)).T
+    def sepia(self, image):
+        """Apply sepia filter"""
+        sepia_filter = np.array([[0.393, 0.769, 0.189],
+                               [0.349, 0.686, 0.168],
+                               [0.272, 0.534, 0.131]])
+        sepia_img = cv2.transform(image, sepia_filter)
+        sepia_img = np.clip(sepia_img, 0, 255)
+        return sepia_img.astype(np.uint8)
         
-        # Blur the image
-        blurred = cv2.GaussianBlur(image, (blur_amount*2+1, blur_amount*2+1), 0)
+    def vintage(self, image):
+        """Apply vintage filter"""
+        # Add warm temperature
+        rows, cols = image.shape[:2]
         
-        # Combine original and blurred image using the mask
-        mask = np.dstack([mask]*3)
-        return (image * mask + blurred * (1 - mask)).astype(np.uint8) 
+        # Create a warm color overlay
+        overlay = np.full_like(image, (255, 240, 220))  # Warm color
+        vintage = cv2.addWeighted(image, 0.8, overlay, 0.2, 0)
+        
+        # Add vignette effect
+        kernel_x = cv2.getGaussianKernel(cols, cols/2)
+        kernel_y = cv2.getGaussianKernel(rows, rows/2)
+        kernel = kernel_y * kernel_x.T
+        mask = kernel / kernel.max()
+        mask = mask ** 0.5  # Adjust vignette strength
+        
+        # Apply vignette
+        vintage = vintage * mask[:,:,np.newaxis]
+        
+        # Add slight blur for dreamy effect
+        vintage = cv2.GaussianBlur(vintage, (3, 3), 0)
+        
+        return vintage.astype(np.uint8) 
