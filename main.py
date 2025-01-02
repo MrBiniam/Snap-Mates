@@ -1,9 +1,9 @@
+
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import time
 import os
-from video_capture import *
-from image_capture import *
+from image_processing import *
 from advanced_filters import AdvancedFilters
 from batch_processor import BatchProcessor
 import PIL
@@ -32,7 +32,7 @@ def select_filter(filter, status):
 class FiltrawyApp:
     def __init__(self, window):
         self.window = window
-        self.window.title("GREAT MATES - Computer Science")
+        self.window.title("Great Mates - Computer Science")
         self.window.geometry("1400x1200")
         
         # Initialize filter parameters
@@ -47,9 +47,9 @@ class FiltrawyApp:
         
         # Load logo
         try:
-            logo_path = os.path.join("test-images", "greatmates_logo.png")
+            logo_path = os.path.join("test-images", "Great Mates.jpg")
             logo_image = PIL.Image.open(logo_path)
-            logo_image = logo_image.resize((150, 150), PIL.Image.LANCZOS)
+            logo_image = logo_image.resize((500, 200), PIL.Image.LANCZOS)
             self.logo_photo = PIL.ImageTk.PhotoImage(logo_image)
         except Exception as e:
             print(f"Could not load logo: {str(e)}")
@@ -154,13 +154,13 @@ class FiltrawyApp:
             logo_label.pack(side="top", padx=20)
             
             # Add app name with modern styling
-            app_name = ttk.Label(logo_container, text="GREAT MATES", 
+            app_name = ttk.Label(logo_container, text="Great Mates", 
                                font=('Helvetica', 28, 'bold'),
                                style="AppName.TLabel")
             app_name.pack(side="top", pady=(5,0))
             
             # Add subtitle with modern styling
-            subtitle = ttk.Label(logo_container, text="Computer Science", 
+            subtitle = ttk.Label(logo_container, text="Computer Vision and Image Processing", 
                                font=('Helvetica', 14),
                                style="Subtitle.TLabel")
             subtitle.pack(side="top", pady=(0,5))
@@ -225,7 +225,7 @@ class FiltrawyApp:
         file_menu = tk.Menu(menubar, tearoff=0)
         menubar.add_cascade(label="File", menu=file_menu)
         file_menu.add_command(label="Open Image", command=self.select_image)
-        file_menu.add_command(label="Open Camera", command=self.select_camera)
+        
         file_menu.add_separator()
         file_menu.add_command(label="Save Image", command=self.save_image)
         file_menu.add_command(label="Save As...", command=self.save_image_as)
@@ -452,9 +452,7 @@ Ctrl+0 : Fit to Window"""
         ttk.Button(button_container, text="Open Image", 
                   style="Action.TButton",
                   command=self.select_image).pack(side="left", padx=5)
-        ttk.Button(button_container, text="Open Camera",
-                  style="Action.TButton", 
-                  command=self.select_camera).pack(side="left", padx=5)
+      
         ttk.Button(button_container, text="Batch Process",
                   style="Action.TButton",
                   command=self.start_batch_processing).pack(side="left", padx=5)
@@ -560,7 +558,7 @@ Thank you for using Filtrawy!"""
     
     def select_camera(self):
         try:
-            self.img = VideoCap(self.window)
+        
             self.window.title("GREAT MATES - Computer Science - Camera Feed")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to open camera: {str(e)}")

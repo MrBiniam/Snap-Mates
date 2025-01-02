@@ -23,19 +23,21 @@ class BatchProcessor:
             # Read image
             image = cv2.imread(image_path)
             if image is None:
+                print(f"Failed to read image: {image_path}")
                 return None
             
             # Convert to RGB
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             
-            # Apply filter
-            if hasattr(AdvancedFilters, filter_name):
-                filter_func = getattr(AdvancedFilters, filter_name)
-                if params:
-                    processed = filter_func(image, **params)
-                else:
-                    processed = filter_func(image)
+            # Create instance of AdvancedFilters to access its methods
+            filters = AdvancedFilters()
+            
+            # Apply filter if it exists
+            if hasattr(filters, filter_name):
+                filter_func = getattr(filters, filter_name)
+                processed = filter_func(image, **(params or {}))
             else:
+                print(f"Filter {filter_name} not found.")
                 return None
             
             # Convert back to BGR for saving
@@ -129,4 +131,4 @@ class BatchProcessor:
             x = j * cell_width
             contact_sheet[y:y + cell_height, x:x + cell_width] = img
         
-        return contact_sheet 
+        return contact_sheet

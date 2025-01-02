@@ -1,17 +1,29 @@
-# Filtrawy - Advanced Image Processing Application
+# Great Mates Transforming Images with Filters
 
-A modern and powerful image processing application built with Python, featuring a user-friendly GUI and extensive filter collection. Created by Cherinet ([Chereanbot](https://github.com/Chereanbot/Filtrawy)).
+A modern and powerful image processing application built with Python, featuring a user-friendly GUI and an extensive filter collection. Created by a group of Dilla University
+computer Science students Known as Great Mates.
+These young passionate Aspiring programmers are named 
+Biniam Shimeles
+Cherinet Afework
+Efrata Smeneh
+Ephrem Bedo
+Betelhem Geremew
+Amir Mustefa
+Abrham Dagnachew
 
 ## Features
 
-* Modern and intuitive graphical user interface
-* Real-time filter preview with side-by-side comparison
-* Extensive collection of image processing filters
-* Live camera feed support
-* Batch processing capabilities
-* Keyboard shortcuts for common operations
-* Undo/Redo functionality
-* Zoom and fit-to-window options
+Modern and intuitive graphical user interface
+
+Real-time filter preview with side-by-side comparison
+
+Extensive collection of image processing filters
+
+Batch processing capabilities for applying effects to multiple images
+
+Keyboard shortcuts for common operations
+
+Undo/Redo functionality
 
 ### Available Filters:
 
@@ -40,16 +52,14 @@ A modern and powerful image processing application built with Python, featuring 
   * Sepia
   * Vintage
   * Vignette
-  * Unsharp Mask
-  * Histogram Equalization
-
+ 
 ## Installation
 
 1. Make sure you have Python 3.8+ installed
 2. Clone this repository:
 ```bash
-git clone https://github.com/Chereanbot/Filtrawy.git
-cd Filtrawy
+git clone https://github.com/MrBiniam/SnapMates.git
+cd SnapMates
 ```
 3. Install dependencies:
 ```bash
@@ -74,7 +84,7 @@ python main.py
    * Save Image: File > Save or Ctrl+S
    * Undo/Redo: Edit menu or Ctrl+Z/Ctrl+Y
    * Reset Image: Edit > Reset Image or Ctrl+R
-   * Zoom: View menu or Ctrl+Plus/Minus
+
 
 4. Applying Filters:
    * Select a filter from the left panel
@@ -123,10 +133,10 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-* Created by Cherinet ([Chereanbot](https://github.com/Chereanbot/Filtrawy))
+* Created by by Biniam Shimeles (MrBiniam)
 * Built using OpenCV, NumPy, and tkinter
 * Special thanks to the Python imaging community
 
 ## Contact
 
-For questions or suggestions, please open an issue on the [GitHub repository](https://github.com/Chereanbot/Filtrawy).
+For questions or suggestions, please email biniams.shimeles@gmail.com or open an issue on the GitHub repository.
