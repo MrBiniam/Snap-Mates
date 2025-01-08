@@ -140,3 +140,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Contact
 
 For questions or suggestions, please email biniams.shimeles@gmail.com or open an issue on the GitHub repository.
+# Snap-Mates
