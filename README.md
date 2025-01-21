@@ -3,13 +3,13 @@
 A modern and powerful image processing application built with Python, featuring a user-friendly GUI and an extensive filter collection. Created by a group of Dilla University
 computer Science students Known as Great Mates.
 These young passionate Aspiring programmers are named 
-Biniam Shimeles
-Cherinet Afework
-Efrata Smeneh
-Ephrem Bedo
-Betelhem Geremew
-Amir Mustefa
-Abrham Dagnachew
+* Biniam Shimeles
+* Cherinet Afework
+* Efrata Smeneh
+* Ephrem Bedo
+* Betelhem Geremew
+* Amir Mustefa
+* Abrham Dagnachew
 
 ## The project 
 ![Great Mates First dashboard](https://github.com/user-attachments/assets/64914cbe-eb57-4de6-8f50-e42b297f8cb1)
