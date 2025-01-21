@@ -11,6 +11,14 @@ Betelhem Geremew
 Amir Mustefa
 Abrham Dagnachew
 
+## The project 
+![Great Mates First dashboard](https://github.com/user-attachments/assets/64914cbe-eb57-4de6-8f50-e42b297f8cb1)
+![Filteraway](https://github.com/user-attachments/assets/2f09f05d-37da-4407-b6de-7f3e9ab444c5)
+![Great Mates Decrease Contrast](https://github.com/user-attachments/assets/642bb1a5-a462-4538-8af4-7aeb18ba30be)
+![Great Mates effect sobel](https://github.com/user-attachments/assets/303c7609-15ae-4efe-aca1-528aedfebe04)
+![Great Mates High contrast](https://github.com/user-attachments/assets/a9381dfc-71df-4053-8451-0f92b2a7ac98)
+![Great Mates open image](https://github.com/user-attachments/assets/6bfd1fdf-76f1-4051-a3b1-826579fafdf2)
+
 ## Features
 
 Modern and intuitive graphical user interface
